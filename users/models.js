@@ -15,7 +15,9 @@ const UserSchema = mongoose.Schema({
     required: true
   },
   firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
+  lastName: {type: String, default: ''},
+  //email: {type: String, required: true},
+  followers: [{username: {type: String, required: true}}]
 });
 
 UserSchema.methods.serialize = function() {
