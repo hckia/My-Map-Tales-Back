@@ -156,10 +156,40 @@ router.post('/', jwtAuth , jsonParser, (req, res) => {
     });
 });
 
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
+//easy way to get a users stories - may want a public option.
+router.get('/myStories', jwtAuth,(req,res) =>{
+  const author = req.user.username
+  console.log("author ", author);
+  const authorStories = {author: author}
+  return Story.find(authorStories)
+    .then(stories =>{
+      if(stories.length < 1 || stories == undefined){
+        return res.status(204);
+      }
+      console.log("stories ",stories);
+      res.status(201).json(stories);
+    })
+    .catch(err => {
+      //console.log(err);
+      res.status(404).json({message: "stories not found"});
+    })
+});
+
+//get a specific story
+router.get('/:id', (req,res) =>{
+  console.log("params ", req.params.id)
+  const id = { _id: req.params.id};
+  return Story.findOne(id)
+    .then(storyId =>{
+      //console.log(storyId);
+      res.status(201).json(storyId);
+    })
+    .catch(err =>{
+      //console.log(err);
+      res.status(404).json({message: "Story ID not found"});
+    })
+})
+
 router.get('/', (req, res) => {
   return Story.find()
     .then(stories => res.json(stories.map(story => story)))
