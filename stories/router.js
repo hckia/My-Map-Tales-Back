@@ -83,20 +83,6 @@ router.post('/', jwtAuth , jsonParser, (req, res) => {
       'max' in sizedFields[field] &&
             keysToTestSize[field].length > sizedFields[field].max
   );
-  // const tooSmallField = () => {
-  //   //console.log("action fired: ", action);
-  //   switch(action.type){
-  //   case FETCH_STORIES:
-  //     return _.mapKeys(action.payload, '_id')
-  //   case SEARCH_STORIES:
-  //     //console.log('within reducers term value: ',action.payload);
-  //     return action.payload;
-  //   // case CREATE_STORIES:
-  //   //  return action.payload;
-  //   default:
-  //     return state;
-  //   }
-  // }
 
   if (tooSmallField || tooLargeField) {
     console.log("tooSmallField fired ", tooSmallField)
@@ -164,7 +150,7 @@ router.get('/myStories', jwtAuth,(req,res) =>{
   return Story.find(authorStories)
     .then(stories =>{
       if(stories.length < 1 || stories == undefined){
-        return res.status(204);
+        return res.status(204).json(stories);
       }
       console.log("stories ",stories);
       res.status(201).json(stories);
@@ -181,7 +167,7 @@ router.get('/:id', (req,res) =>{
   const id = { _id: req.params.id};
   return Story.findOne(id)
     .then(storyId =>{
-      //console.log(storyId);
+      console.log("our story ",storyId);
       res.status(201).json(storyId);
     })
     .catch(err =>{
